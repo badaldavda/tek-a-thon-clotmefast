@@ -14,8 +14,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.DefaultCellEditor;
@@ -235,24 +237,46 @@ public class RequestorDetails extends javax.swing.JFrame {
                   Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
                   int row = myTable.getSelectedRow();
                   String myTable_click0 = (myTable.getModel().getValueAt(row, 1).toString());
-                  //Statement stmt = conn.prepareStatement();
+                  int c = 0;
+                  Statement stmt = conn.createStatement();
                   
+                StringBuilder DonationID=new StringBuilder();
+                SimpleDateFormat ft=new SimpleDateFormat("yyMMddhhmm");
+                
+                SimpleDateFormat ft1=new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat ft2=new SimpleDateFormat("hh:mm:ss");
+                Date dNow = new Date();
+                Date dN = new Date();
+                Date dT = new Date();
+        
                   ArrayList<String> selectedRows;
             selectedRows = new ArrayList<>();
+            
                   for(int i = 0; i < donorSelect.getRowCount();i++)
                   {
                       if((Boolean)donorSelect.getValueAt(i, 4))
                       {
+                          c++;
+                           DonationID.setLength(0);
                           System.out.println(donorSelect.getValueAt(i,0));
-                          boolean add = selectedRows.add((String)donorSelect.getValueAt(i, 0));
-                          System.out.println(add);
+                          donorSelect.getValueAt(i,1).toString();
+                          DonationID.append(myTable_click0.toLowerCase().substring(0, 2));
+                          
+                          DonationID.append(ft.format(dNow));
+                          
+                          DonationID.append(String.format("%04d", Integer.parseInt((String) donorSelect.getValueAt(i,0))));
+                          DonationID.append(String.format("%04d", c));
+                          String str= "INSERT INTO donation VALUES ('"+DonationID+"','"+ft2.format(dT)+"','"+ft1.format(dN)+"',"+donorSelect.getValueAt(i,0)+","+myTable.getValueAt(row, 0)+",0,0,0,0)";
+                          System.out.println(str);
+                          stmt.executeUpdate(str);
+                          System.out.println(DonationID);
                       }
                   }
             for (String selectedRow : selectedRows) {
                 System.out.println(selectedRow);
+                
             }
                   
-        
         
         
         
